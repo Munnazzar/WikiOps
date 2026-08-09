@@ -1,8 +1,24 @@
 package main
 
-//TIP <p>To run your code, right-click the code and select <b>Run</b>.</p> <p>Alternatively, click
-// the <icon src="AllIcons.Actions.Execute"/> icon in the gutter and select the <b>Run</b> menu item from here.</p>
+import (
+	"backend/database"
+	"backend/internal/router"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
+)
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		panic("Error loading .env file")
+	}
+	app := fiber.New()
+	database.Init()
+	router.InitRouter(app)
 
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Welcome to FastTea API")
+	})
+	app.Listen(":8080")
 }
